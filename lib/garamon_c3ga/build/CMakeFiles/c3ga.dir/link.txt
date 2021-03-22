@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC   -shared -Wl,-soname,libc3ga.so -o libc3ga.so CMakeFiles/c3ga.dir/src/c3ga/Mvec.cpp.o 

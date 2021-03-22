@@ -1,0 +1,13 @@
+/usr/local/include/c3ga/BasisTransformations.hpp
+/usr/local/include/c3ga/Constants.hpp
+/usr/local/include/c3ga/DualCoefficients.hpp
+/usr/local/include/c3ga/Geometric.hpp
+/usr/local/include/c3ga/GeometricExplicit.hpp
+/usr/local/include/c3ga/Inner.hpp
+/usr/local/include/c3ga/InnerExplicit.hpp
+/usr/local/include/c3ga/Mvec.hpp
+/usr/local/include/c3ga/Outer.hpp
+/usr/local/include/c3ga/OuterExplicit.hpp
+/usr/local/include/c3ga/Utility.hpp
+/usr/local/include/c3ga/Mvec.cpp
+/usr/local/lib/libc3ga.so
