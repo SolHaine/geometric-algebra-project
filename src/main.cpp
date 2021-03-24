@@ -39,8 +39,8 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
     FilePath applicationPath(argv[0]);
-    Program program = loadProgram(applicationPath.dirPath() + "../shaders/color2D.vs.glsl",
-                                  applicationPath.dirPath() + "../shaders/color2D.fs.glsl");
+    Program program = loadProgram(applicationPath.dirPath() + "../shaders/color.vs.glsl",
+                                  applicationPath.dirPath() + "../shaders/color.fs.glsl");
     program.use();
 
     std::cout << "OpenGL Version : " << glGetString(GL_VERSION) << std::endl;
