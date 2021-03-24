@@ -1,124 +1,137 @@
-#include <GL/glew.h>
-
 #include <glimac/SDLWindowManager.hpp>
-#include <glimac/FilePath.hpp>
-
-#include <imgui/imgui.h>
-#include <imgui/imgui_impl_opengl3.h>
-#include <imgui/imgui_impl_sdl.h>
-
+#include <GL/glew.h>
 #include <iostream>
-#include <numeric>
+#include <glimac/Program.hpp>
+#include <glimac/FilePath.hpp>
+#include "glimac/glm.hpp"
+#include <cstddef>
 
-#include "../include/View.hpp"
-#include "../include/FreeFlyCamera.hpp"
-#include "../include/Interface.hpp"
-
-
-#include <c3ga/Mvec.hpp>
-#include "c3gaTools.hpp"
-
-/*
-join point(p1,p2)
-    l1 = dual(1)
-    l2 = dual(p2)
-    intersect_point = intersect_lines(l1, l2);
-    return dual(intersec_point)
-*/
+using namespace std;
 using namespace glimac;
 
-int main(int argc, char** argv) {
+class Vertex2DColor
+{
+
+public:
+    glm::vec2 position;
+    glm::vec3 color;
+
+    Vertex2DColor() {}
+    Vertex2DColor(glm::vec2 p_position, glm::vec3 p_color) : position(p_position),
+                                                             color(p_color)
+    {
+    }
+};
+
+//Main function 
+//Draw windows
+//Generates shapes and textures
+int main(int argc, char **argv)
+{
     // Initialize SDL and open a window
-    SDLWindowManager windowManager(1024, 768, "Geometric Algebra Project");
-    SDL_GL_SetSwapInterval(1);
+    SDLWindowManager windowManager(800, 600, "GLImac");
 
     // Initialize glew for OpenGL3+ support
     GLenum glewInitError = glewInit();
-    if(GLEW_OK != glewInitError) {
+    if (GLEW_OK != glewInitError)
+    {
         std::cerr << glewGetErrorString(glewInitError) << std::endl;
         return EXIT_FAILURE;
     }
+    FilePath applicationPath(argv[0]);
+    Program program = loadProgram(applicationPath.dirPath() + "../shaders/color2D.vs.glsl",
+                                  applicationPath.dirPath() + "../shaders/color2D.fs.glsl");
+    program.use();
 
-    // Display versions
     std::cout << "OpenGL Version : " << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLEW Version : " << glewGetString(GLEW_VERSION) << std::endl;
 
-    // Definition of projection matrix
-    glm::mat4 ProjMatrix = glm::perspective(glm::radians(70.f), 800.f/600.f, 0.1f, 100.f);
-
     /*********************************
-    * INITIALIZATION CODE
-    *********************************/
-    
-    // Definition of view (load, compile and use shaders)
-    FilePath applicationPath(argv[0]);
-    View view(applicationPath);
+     * HERE SHOULD COME THE INITIALIZATION CODE
+     *********************************/
 
-    // Definition of camera
-    FreeFlyCamera Camera;
+    // vbo creation
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
 
-    // Definition of interface
-    Interface interface(windowManager.window, &windowManager.openglContext);
+    //Bindind vbo
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-    /*********************************
-    * APPLICATION LOOP
-    *********************************/
+    //Coordonates
+    Vertex2DColor vertices[] = {
+        Vertex2DColor(glm::vec2(-0.5, -0.5), glm::vec3(1, 0, 0)),
+        Vertex2DColor(glm::vec2(0.5, -0.5), glm::vec3(0, 1, 0)),
+        Vertex2DColor(glm::vec2(0, 0.5), glm::vec3(0, 0, 1))};
 
-    static bool done = false;
-    static const Uint32 FRAMERATE_MILLISECONDS = 1000/60;
+    glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(Vertex2DColor), vertices, GL_STATIC_DRAW);
 
-    while(!done) {
-        // Time
-        Uint32 startTime = SDL_GetTicks();
+    //Débinder
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    // vao Creation
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+
+    //Bindind vao
+    //glBindersVertexArray(GL_ARRAY_BUFFER);
+    glBindVertexArray(vao);
+
+    //Attributs activation
+    //au lieu de faire ça glEnableVertexAttribArray(0);
+    //To what corresponds the 0
+    const GLuint VERTEX_ATTR_POSITION = 0;
+    glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
+
+    const GLuint VERTEX_ATTR_COLOR = 1;
+    glEnableVertexAttribArray(VERTEX_ATTR_COLOR);
+
+    //rebinder le VBO
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+    glVertexAttribPointer(VERTEX_ATTR_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2DColor), (const GLvoid *)offsetof(Vertex2DColor, position));
+    glVertexAttribPointer(VERTEX_ATTR_COLOR, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex2DColor), (const GLvoid *)offsetof(Vertex2DColor, color));
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    //débinder VAO
+    glBindVertexArray(0);
+
+    // Application loop:
+    bool done = false;
+    while (!done)
+    {
         // Event loop:
         SDL_Event e;
-        while(windowManager.pollEvent(e)) {
-            ImGui_ImplSDL2_ProcessEvent(&e);
-
-            // Leave the loop after this iteration
-            if(e.type == SDL_QUIT || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)) {
-                done = true;
+        while (windowManager.pollEvent(e))
+        {
+            if (e.type == SDL_QUIT)
+            {
+                done = true; // Leave the loop after this iteration
             }
         }
 
         /*********************************
-         * RENDERING CODE
+         * HERE SHOULD COME THE RENDERING CODE
          *********************************/
-       
-        // Clean window and depth buffer
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Activate depth
-        glEnable(GL_DEPTH_TEST);
-        
-        // Choose program
-        view.useView();
+        //Nettoyer la fenêtre
+        glClear(GL_COLOR_BUFFER_BIT);
 
-        // Definition of matrix
-        glm::mat4 MMatrix;
-        glm::mat4 ViewMatrix = Camera.getViewMatrix();
-        glm::mat4 MVMatrix = ViewMatrix * MMatrix;
-        // Send uniforms (view matrix and textures)
-        view.sendMatrixView(MVMatrix, ProjMatrix);
+        //rebinder vao
+        glBindVertexArray(vao);
 
-        /* --------- Interface --------- */
-        // Draw interface
-        interface.beginFrame(windowManager.window);
-        interface.drawInterface(windowManager.window);
-        interface.endFrame(windowManager.window);
+        //dessiner sommet
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
-        /* --------- Implement Sphere --------- */
+        //débinder
+        glBindVertexArray(0);
 
         // Update the display
         windowManager.swapBuffers();
-
-        // Time
-        Uint32 elapsedTime = SDL_GetTicks() - startTime;
-        if(elapsedTime < FRAMERATE_MILLISECONDS){
-            SDL_Delay(FRAMERATE_MILLISECONDS - elapsedTime);
-        }
     }
 
-    return 0;
+    glDeleteBuffers(1, &vbo);
+    glDeleteVertexArrays(1, &vao);
+
+    return EXIT_SUCCESS;
 }

@@ -46,42 +46,6 @@ if(${EIGEN3_FOUND})
     message(STATUS "  include " ${EIGEN3_INCLUDE_DIR})
 endif()
 
-# require lib c3ga
-find_package(C3GA)
-if(${C3GA_FOUND})
-    message(STATUS "lib C3GA found")
-    message(STATUS "  include " ${C3GA_INCLUDE_DIRS})
-    message(STATUS "  lib     " ${C3GA_LIBRARIES})
-else()
-    message(STATUS "lib C3GA should be set manually, please uncomment the commented lines in the CMakeLists.txt file")
-
-    # linux users
-    #set(C3GA_INCLUDE_DIRS "/home/[full path to]/garamon_c3ga/src/")
-    #set(C3GA_LIBRARIES "[full path to]/garamon_c3ga/build/libc3ga.so")
-
-    # mac users
-    #set(C3GA_INCLUDE_DIRS "/home/[full path to]/garamon_c3ga/src/")
-    #set(C3GA_LIBRARIES "[full path to]/garamon_c3ga/build/libc3ga.dylib")
-
-    # windows users
-    #set(C3GA_INCLUDE_DIRS "C:\[full path to]/garamon_c3ga/src/")
-    #set(C3GA_LIBRARIES "[full path to]/garamon_c3ga/build/libc3ga.dll")
-
-    # for manual setting, check if valid
-    if(EXISTS "${C3GA_INCLUDE_DIRS}")
-        message(STATUS "include for lib c3ga found: ${C3GA_INCLUDE_DIRS}" )
-    else()
-        message(FATAL_ERROR "include for lib c3ga invalid or not found: ${C3GA_INCLUDE_DIRS}" )
-    endif()
-
-    # for manual setting, check if valid
-    if(EXISTS "${C3GA_LIBRARIES}")
-        message(STATUS "library c3ga found: ${C3GA_LIBRARIES}" )
-    else()
-        message(FATAL_ERROR "library c3ga not found: ${C3GA_LIBRARIES}" )
-    endif()
-endif()
-
 
 # require lib c2ga
 find_package(C2GA)
@@ -165,15 +129,12 @@ include_directories(
         ${GLEW_INCLUDE_DIRS}
         ${EIGEN3_INCLUDE_DIR}
         lib/glimac/include 
-        lib/imgui/include 
         lib/glm/include
         )
-include_directories(${C3GA_INCLUDE_DIRS})
 include_directories(${C2GA_INCLUDE_DIRS})
 include_directories(${P2GA_INCLUDE_DIRS})
 add_subdirectory(lib/glimac)
-add_subdirectory(lib/imgui)
-set(ALL_LIBRARIES glimac imgui ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES} ${GLEW_LIBRARY} Eigen3::Eigen -lstdc++fs)
+set(ALL_LIBRARIES glimac ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES} ${GLEW_LIBRARY} Eigen3::Eigen -lstdc++fs)
 
 ######################################################################################
 ########################### Declaration of .exe  #####################################
