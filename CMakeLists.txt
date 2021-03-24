@@ -82,6 +82,79 @@ else()
     endif()
 endif()
 
+
+# require lib c2ga
+find_package(C2GA)
+if(${C2GA_FOUND})
+    message(STATUS "lib C2GA found")
+    message(STATUS "  include " ${C2GA_INCLUDE_DIRS})
+    message(STATUS "  lib     " ${C2GA_LIBRARIES})
+else()
+    message(STATUS "lib C2GA should be set manually, please uncomment the commented lines in the CMakeLists.txt file")
+
+    # linux users
+    #set(C2GA_INCLUDE_DIRS "/home/[full path to]/garamon_c2ga/src/")
+    #set(C2GA_LIBRARIES "[full path to]/garamon_c2ga/build/libc2ga.so")
+
+    # mac users
+    #set(C2GA_INCLUDE_DIRS "/home/[full path to]/garamon_c2ga/src/")
+    #set(C2GA_LIBRARIES "[full path to]/garamon_c2ga/build/libc2ga.dylib")
+
+    # windows users
+    #set(C2GA_INCLUDE_DIRS "C:\[full path to]/garamon_c2ga/src/")
+    #set(C2GA_LIBRARIES "[full path to]/garamon_c2ga/build/libc2ga.dll")
+
+    # for manual setting, check if valid
+    if(EXISTS "${C2GA_INCLUDE_DIRS}")
+        message(STATUS "include for lib c2ga found: ${C2GA_INCLUDE_DIRS}" )
+    else()
+        message(FATAL_ERROR "include for lib c2ga invalid or not found: ${C2GA_INCLUDE_DIRS}" )
+    endif()
+
+    # for manual setting, check if valid
+    if(EXISTS "${C2GA_LIBRARIES}")
+        message(STATUS "library c2ga found: ${C2GA_LIBRARIES}" )
+    else()
+        message(FATAL_ERROR "library c2ga not found: ${C2GA_LIBRARIES}" )
+    endif()
+endif()
+
+# require lib p2ga
+find_package(P2GA)
+if(${P2GA_FOUND})
+    message(STATUS "lib P2GA found")
+    message(STATUS "  include " ${P2GA_INCLUDE_DIRS})
+    message(STATUS "  lib     " ${P2GA_LIBRARIES})
+else()
+    message(STATUS "lib P2GA should be set manually, please uncomment the commented lines in the CMakeLists.txt file")
+
+    # linux users
+    #set(P2GA_INCLUDE_DIRS "/home/[full path to]/garamon_p2ga/src/")
+    #set(P2GA_LIBRARIES "[full path to]/garamon_p2ga/build/libp2ga.so")
+
+    # mac users
+    #set(P2GA_INCLUDE_DIRS "/home/[full path to]/garamon_p2ga/src/")
+    #set(P2GA_LIBRARIES "[full path to]/garamon_p2ga/build/libp2ga.dylib")
+
+    # windows users
+    #set(P2GA_INCLUDE_DIRS "C:\[full path to]/garamon_p2ga/src/")
+    #set(P2GA_LIBRARIES "[full path to]/garamon_p2ga/build/libp2ga.dll")
+
+    # for manual setting, check if valid
+    if(EXISTS "${P2GA_INCLUDE_DIRS}")
+        message(STATUS "include for lib p2ga found: ${P2GA_INCLUDE_DIRS}" )
+    else()
+        message(FATAL_ERROR "include for lib p2ga invalid or not found: ${P2GA_INCLUDE_DIRS}" )
+    endif()
+
+    # for manual setting, check if valid
+    if(EXISTS "${P2GA_LIBRARIES}")
+        message(STATUS "library p2ga found: ${P2GA_LIBRARIES}" )
+    else()
+        message(FATAL_ERROR "library p2ga not found: ${P2GA_LIBRARIES}" )
+    endif()
+endif()
+
 ######################################################################################
 ###################################### Includes ######################################
 ######################################################################################
@@ -96,6 +169,8 @@ include_directories(
         lib/glm/include
         )
 include_directories(${C3GA_INCLUDE_DIRS})
+include_directories(${C2GA_INCLUDE_DIRS})
+include_directories(${P2GA_INCLUDE_DIRS})
 add_subdirectory(lib/glimac)
 add_subdirectory(lib/imgui)
 set(ALL_LIBRARIES glimac imgui ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES} ${GLEW_LIBRARY} Eigen3::Eigen -lstdc++fs)

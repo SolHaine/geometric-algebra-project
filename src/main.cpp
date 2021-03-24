@@ -14,6 +14,17 @@
 #include "../include/FreeFlyCamera.hpp"
 #include "../include/Interface.hpp"
 
+
+#include <c3ga/Mvec.hpp>
+#include "c3gaTools.hpp"
+
+/*
+join point(p1,p2)
+    l1 = dual(1)
+    l2 = dual(p2)
+    intersect_point = intersect_lines(l1, l2);
+    return dual(intersec_point)
+*/
 using namespace glimac;
 
 int main(int argc, char** argv) {
@@ -96,6 +107,8 @@ int main(int argc, char** argv) {
         interface.beginFrame(windowManager.window);
         interface.drawInterface(windowManager.window);
         interface.endFrame(windowManager.window);
+
+        /* --------- Implement Sphere --------- */
 
         // Update the display
         windowManager.swapBuffers();
