@@ -5,6 +5,9 @@
 #include <glimac/FilePath.hpp>
 #include "glimac/glm.hpp"
 #include <cstddef>
+#include <c2ga/Mvec.hpp>
+#include "../include/c2gaTools.hpp"
+#include "../include/drawing.hpp"
 
 using namespace std;
 using namespace glimac;
@@ -49,6 +52,12 @@ int main(int argc, char **argv)
     /*********************************
      * HERE SHOULD COME THE INITIALIZATION CODE
      *********************************/
+
+    //Test
+    //create c2ga point
+    Mvec<double> p = point(0.0,0.0);
+
+    Mvec<double> line = !p;
 
     // vbo creation
     GLuint vbo;
@@ -121,7 +130,14 @@ int main(int argc, char **argv)
         glBindVertexArray(vao);
 
         //dessiner sommet
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        //drawPoint(p);
+        drawCircle(p, 1.0);
+        drawLine(line);
+        //unsigned int indexes[]= {0,1};
+        
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glVertexPointer(2, GL_FLOAT, 0, vertices);
+        glDrawArrays(GL_LINES, 0, 2);
 
         //débinder
         glBindVertexArray(0);
