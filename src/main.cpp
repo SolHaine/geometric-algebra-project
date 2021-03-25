@@ -55,9 +55,12 @@ int main(int argc, char **argv)
 
     //Test
     //create c2ga point
-    Mvec<double> p = point(0.0,0.0);
+    Mvec<double> p = point(0.0,1.0);
 
     Mvec<double> line = !p;
+
+    Mvec<double> p1 = (line + sqrt(line*line)) / (-ei<double>()|line);
+	Mvec<double> p2 = (line - sqrt(line*line)) / (-ei<double>()|line);
 
     // vbo creation
     GLuint vbo;
@@ -68,8 +71,8 @@ int main(int argc, char **argv)
 
     //Coordonates
     Vertex2DColor vertices[] = {
-        Vertex2DColor(glm::vec2(-0.5, -0.5), glm::vec3(1, 0, 0)),
-        Vertex2DColor(glm::vec2(0.5, -0.5), glm::vec3(0, 1, 0)),
+        Vertex2DColor(glm::vec2(p1[E1], p1[E2]), glm::vec3(1, 0, 0)),
+        Vertex2DColor(glm::vec2(p2[E1], p2[E2]), glm::vec3(0, 1, 0)),
         Vertex2DColor(glm::vec2(0, 0.5), glm::vec3(0, 0, 1))};
 
     glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(Vertex2DColor), vertices, GL_STATIC_DRAW);
@@ -132,7 +135,7 @@ int main(int argc, char **argv)
         //dessiner sommet
         //drawPoint(p);
         drawCircle(p, 1.0);
-        drawLine(line);
+        drawLine(line, vbo);
         //unsigned int indexes[]= {0,1};
         
         glEnableClientState(GL_VERTEX_ARRAY);
